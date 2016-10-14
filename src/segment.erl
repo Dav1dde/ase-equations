@@ -5,6 +5,17 @@
 -include("records.hrl").
 
 
+permutate([Operation | Rest], Segment) when not is_list(Segment) ->
+  permutate(Rest, permutate(Operation, Segment));
+
+permutate([Operation | Rest], Segments) when is_list(Segments) ->
+  permutate(Rest, util:deduplicate(lists:flatten(
+    lists:map(fun(E) -> permutate(Operation, E) end, Segments)
+  )));
+
+permutate([], Segments) ->
+  Segments;
+
 permutate(Operation, Segment) when is_tuple(Segment) ->
   [Head | Data] = tuple_to_list(Segment),
   if
