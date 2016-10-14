@@ -1,8 +1,8 @@
--module(display).
+-module(ae_display).
 
 -export([new/1, default/0]).
 
--include("records.hrl").
+-include("ae_records.hrl").
 
 
 new(States) ->

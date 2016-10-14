@@ -1,3 +1,6 @@
 *.beam
 *.iml
 .idea/
+*.lock
+*.dump
+_*/

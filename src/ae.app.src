@@ -1,0 +1,16 @@
+{application, ae,
+ [{description, "ASE Equations"},
+  {vsn, "1"},
+  {registered, []},
+  {mod, { ae_main, []}},
+  {applications,
+   [kernel,
+    stdlib
+   ]},
+  {env,[]},
+  {modules, []},
+
+  {maintainers, []},
+  {licenses, []},
+  {links, []}
+ ]}.

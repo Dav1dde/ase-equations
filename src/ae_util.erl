@@ -1,4 +1,4 @@
--module(util).
+-module(ae_util).
 
 -export([deduplicate/1]).
 

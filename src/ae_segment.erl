@@ -1,15 +1,15 @@
--module(segment).
+-module(ae_segment).
 
 -export([permutate/2]).
 
--include("records.hrl").
+-include("ae_records.hrl").
 
 
 permutate([Operation | Rest], Segment) when not is_list(Segment) ->
   permutate(Rest, permutate(Operation, Segment));
 
 permutate([Operation | Rest], Segments) when is_list(Segments) ->
-  permutate(Rest, util:deduplicate(lists:flatten(
+  permutate(Rest, ae_util:deduplicate(lists:flatten(
     lists:map(fun(E) -> permutate(Operation, E) end, Segments)
   )));
 
@@ -28,7 +28,7 @@ permutate(Operation, []) when Operation == add; Operation == remove ->
 
 permutate(Operation, [Head | Rest]) when Operation == add; Operation == remove ->
   %% remove duplicates
-  util:deduplicate(
+  ae_util:deduplicate(
     %% flip head bit
     [[flip(Operation, Head) | Rest]] ++
     %% keep head bit, but flip all other bits
