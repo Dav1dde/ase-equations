@@ -1,6 +1,6 @@
 -module(ae_main).
 
--export([start/0, start/1]).
+-export([start/0, start/2]).
 
 -include("ae_records.hrl").
 
@@ -15,9 +15,13 @@ make_solver(ParseMapping, ToString, Fun) ->
 
 
 start() ->
-  start([]).
+  start(normal, []).
 
-start(_Args) ->
+start(normal, _Args) ->
+  {ok, spawn_link(fun run/0)}.
+
+
+run() ->
   inets:start(),
   Display = ae_display:default(),
   Operators = [
@@ -44,21 +48,7 @@ start(_Args) ->
   Stage1And2Solver = make_solver(ParseMapping, ToString, fun(Term) -> ae_stage1:generate_solutions(Display, Term) end),
   Stage3Solver = make_solver(ParseMapping, ToString, fun(Term) -> ae_stage3:generate_solutions(Display, Term) end),
   Stage4Solver = make_solver(ParseMapping, ToString, fun(Term) -> ae_stage4:generate_solutions(Display, Term, Stage4FlipMap) end),
-  R = ae_rest:run(
+  ae_rest:run(
     "http://localhost:8080/assignment/stage/~B/testcase/1",
     [{1, Stage1And2Solver}, {2, Stage1And2Solver}, {3, Stage3Solver}, {4, Stage4Solver}]
-  ),
-  %R = test(Display, ParseMapping, ToString),
-  io:format("R: ~p~n", [R]),
-  io:format("~n~n~n~n~n"),
-  exit(error).
-
-
-test(Display, ParseMapping, ToString) ->
-  Term = ae_term:parse("0+0=9", ParseMapping),
-  Solutions = ae_stage4:generate_solutions(Display, Term, #{
-    maps:get(minus, ParseMapping) => maps:get(plus, ParseMapping),
-    maps:get(plus, ParseMapping) => maps:get(minus, ParseMapping)
-  }),
-  io:format("Plus: ~p~nMinus: ~p~n", [maps:get(plus, ParseMapping), maps:get(minus, ParseMapping)]),
-  lists:foreach(fun(E) -> io:format("-> ~p~n", [ae_term:to_string(E, ToString)]) end, Solutions).
+  ).
