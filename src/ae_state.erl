@@ -13,12 +13,12 @@ from_string(#display{value_to_segment=VS}, Str) ->
 
 plus(#display{value_to_segment=VS}, L, R) ->
   Result = L#state.value + R#state.value,
-  #state{value=Result, segment=maps:get(Result, VS)}.
+  #state{value=Result, segment=maps:get(Result, VS, invalid)}.
 
 
 minus(#display{value_to_segment=VS}, L, R) ->
   Result = L#state.value - R#state.value,
-  #state{value=Result, segment=maps:get(Result, VS)}.
+  #state{value=Result, segment=maps:get(Result, VS, invalid)}.
 
 
 valid_from_segments(#display{segment_to_value=SV}, Segments) when is_list(Segments) ->

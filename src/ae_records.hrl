@@ -21,7 +21,7 @@
 
 -define(THREE, #state{
   value=3,
-  segment=#seven_segment{top=on, topright=on, middle=on, bottomleft=on, bottom=on}
+  segment=#seven_segment{top=on, topright=on, middle=on, bottomright=on, bottom=on}
 }).
 
 -define(FOUR, #state{
