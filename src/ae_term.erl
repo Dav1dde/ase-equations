@@ -1,6 +1,6 @@
 -module(ae_term).
 
--export([evaluate/1, parse/2]).
+-export([evaluate/1, to_string/2, extract/2, replace/3, parse/2]).
 
 -include("ae_records.hrl").
 
@@ -11,6 +11,45 @@ evaluate(#term{type=op, value=OP, left=L, right=R}) ->
 
 evaluate(#term{type=value, value=V}) ->
   V.
+
+
+to_string(#term{type=T, value=V, left=L, right=R}, Fun) ->
+  to_string(L, Fun) ++ Fun(T, V) ++ to_string(R, Fun);
+
+to_string(undefined, _Fun) ->
+  [].
+
+
+extract(What, #term{type=T, value=V, left=L, right=R}) ->
+  if
+    What == T -> extract(What, L) ++ [V] ++ extract(What, R);
+    true -> extract(What, L) ++ extract(What, R)
+  end;
+
+extract(_What, undefined) -> [].
+
+
+replace(What, #term{} = Term, With) ->
+  element(2, replace2(What, Term, With)).
+
+replace2(What, #term{type=T, left=L, right=R} = Term, [With | Rest]) ->
+  if
+    What == T ->
+      {LeftRest, NewLeft} = replace2(What, L, Rest),
+      {RightRest, NewRight} = replace2(What, R, LeftRest),
+      {RightRest, Term#term{value=With, left=NewLeft, right=NewRight}};
+    true ->
+      {LeftRest, NewLeft} = replace2(What, L, [With | Rest]),
+      {RightRest, NewRight} = replace2(What, R, LeftRest),
+      {RightRest, Term#term{left=NewLeft, right=NewRight}}
+      %%Term#term{left=replace(What, L, [With | Rest]), right=replace(What, R, [With | Rest])}
+  end;
+
+replace2(_What, Term, []) ->
+  {[], Term};
+
+replace2(_What, undefined, With) ->
+  {With, undefined}.
 
 
 parse(Str, #{} = Map) ->
