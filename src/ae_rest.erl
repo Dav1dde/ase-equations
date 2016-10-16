@@ -35,4 +35,4 @@ runStage(Url, {Stage, Solver} = S) when Url =/= null ->
   end;
 
 runStage(null, _Solver) ->
-  success.
+  ok.
