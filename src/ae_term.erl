@@ -1,6 +1,6 @@
 -module(ae_term).
 
--export([evaluate/1, to_string/2, extract/2, replace/3, parse/2]).
+-export([evaluate/1, to_list/2, extract/2, replace/3, parse/2]).
 
 -include("ae_records.hrl").
 
@@ -13,10 +13,10 @@ evaluate(#term{type=value, value=V}) ->
   V.
 
 
-to_string(#term{type=T, value=V, left=L, right=R}, Fun) ->
-  to_string(L, Fun) ++ Fun(T, V) ++ to_string(R, Fun);
+to_list(#term{type=T, value=V, left=L, right=R}, Fun) ->
+  to_list(L, Fun) ++ Fun(T, V) ++ to_list(R, Fun);
 
-to_string(undefined, _Fun) ->
+to_list(undefined, _Fun) ->
   [].
 
 

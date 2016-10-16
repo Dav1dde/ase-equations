@@ -10,7 +10,7 @@ make_solver(ParseMapping, ToString, Fun) ->
     Term = ae_term:parse(Equation, ParseMapping),
     Solutions = Fun(Term),
     ValidSolutions = lists:filter(fun ae_term:evaluate/1, Solutions),
-    ae_util:deduplicate([ae_term:to_string(E, ToString) || E <- ValidSolutions])
+    ae_util:deduplicate([ae_term:to_list(E, ToString) || E <- ValidSolutions])
   end.
 
 
